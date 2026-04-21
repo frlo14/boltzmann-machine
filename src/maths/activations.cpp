@@ -39,14 +39,14 @@ matrix relu(const matrix& m) {
 }
 
 double tan_h(double x) {
-    return (std::exp(x) - std::exp(-x))/ (std::exp(x) + std::exp(-x))
+    return (std::exp(x) - std::exp(-x))/ (std::exp(x) + std::exp(-x));
 }
 
 matrix tan_h(const matrix& m) {
     matrix result(m.rows(), m.cols());
     for (std::size_t i = 0; i < m.rows(); i++) {
         for (std::size_t j = 0; j < m.cols(); j++) {
-            result(i, j) = tanh(m(i, j));
+            result(i, j) = tan_h(m(i, j));
         }
     }
 

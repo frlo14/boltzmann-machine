@@ -34,5 +34,8 @@ std::vector<double> dotProduct(const matrix& m, const std::vector<double>& v);
 double dotProduct(const std::vector<double>& v1, const std::vector<double>& v2);
 
 matrix transpose(const matrix& m);
-matrix scalarProduct(double scalar, const matrix& m);
+matrix scalarProduct(const double& scalar, const matrix& m);
+
+matrix outerProduct(const std::vector<double>& v1, const std::vector<double>& v2);
+
 
