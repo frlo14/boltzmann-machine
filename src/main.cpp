@@ -8,6 +8,7 @@
 #include "maths/loss.hpp"
 #include "machine/rbm.hpp"
 #include "data/mnist.hpp"
+#include "visualise.hpp"
 
 int main() {
     // try catch block for debugging
@@ -26,7 +27,7 @@ int main() {
             "data/t10k-images.idx3-ubyte",
             "data/t10k-labels.idx1-ubyte"
         );
-        const int n_test = test_mnist.numImages();
+        const int n_test = std::min(1000, test_mnist.numImages());
         std::cout << "loaded " << n_test << " test images\n";
 
         // hyperparameters
@@ -56,7 +57,7 @@ int main() {
                     rbm.contrastiveDivergence(mnist.images[index], lr, k);
                 }
 
-                // measures reconstruction loss on first sample of batch
+                // measures reconstruction loss
                 int index = image_indicies[j];
                 std::vector<double> reconstruction = rbm.reconstruct(mnist.images[index]);
                 loss += binaryCrossEntropy(reconstruction, mnist.images[index]);
@@ -72,6 +73,23 @@ int main() {
 
             std::cout << "epoch " << i + 1 << " / " << 10 << "  train loss: " << loss / batches << "  val loss: " << val_loss / n_test << "\n";
         }
+
+        std::vector<std::vector<double>> vis_originals;
+        std::vector<std::vector<double>> vis_reconstructions;
+        std::vector<bool> seen(10, false);
+ 
+        // adds the first of each digit tp the list of those to be visualised
+        for (int i = 0; i < n_test && (int)vis_originals.size() < 10; i++) {
+            int label = test_mnist.labels[i];
+            if (label < 10 && !seen[label]) {
+                seen[label] = true;
+                vis_originals.push_back(test_mnist.images[i]);
+                vis_reconstructions.push_back(rbm.reconstruct(test_mnist.images[i]));
+            }
+        }
+ 
+        saveReconstructionGrid(vis_originals, vis_reconstructions, "reconstructions.pgm");
+        std::cout << "saved reconstructions.pgm";
 
         return 0;
     }
